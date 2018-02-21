@@ -39,6 +39,7 @@
             android:layout_height="10dp" />
 
         <EditText
+            android:id="@+id/textAccount"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginLeft="10dp"
@@ -54,6 +55,7 @@
             android:layout_height="5dp" />
 
         <EditText
+            android:id="@+id/textPassword"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginLeft="10dp"

@@ -5,24 +5,25 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chainsmokers.gjlee.elapse.network.APIClient;
+import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URISyntaxException;
+import java.io.IOException;
 
-import io.socket.client.IO;
-import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 
 /**
  * Created by GILJAE on 2018-02-18.
@@ -36,16 +37,15 @@ public class LoginActivity extends AppCompatActivity {
 
     private TextView registerButton;
 
-    // Debugging.
-    private TextView result;
-    private Socket socket;
+    //private Socket socket;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        try {
+        // Socket Programming
+        /*try {
             socket = IO.socket("http://192.168.1.101:4000/");
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -75,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        socket.connect();
+        socket.connect();*/
 
         buttonPrev = findViewById(R.id.buttonPrev);
         buttonPrev.setOnClickListener(new View.OnClickListener() {
@@ -90,18 +90,33 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                  APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
-                 Call<TestClass> call = apiInterface.doTest();
-                 call.enqueue(new Callback<TestClass>() {
+                EditText account = findViewById(R.id.textAccount);
+                EditText password = findViewById(R.id.textPassword);
+                RequestSignin requestSignin = new RequestSignin(account.getText().toString(),password.getText().toString());
+                 Call<ResponseSignin> call = apiInterface.signin(requestSignin);
+                 call.enqueue(new Callback<ResponseSignin>() {
                      @Override
-                     public void onResponse(Call<TestClass> call, Response<TestClass> response) {
+                     public void onResponse(Call<ResponseSignin> call, Response<ResponseSignin> response) {
                          // Debugging.
-                         result = findViewById(R.id.result);
-                         TestClass tc = response.body();
-                         result.setText(tc.sender);
+                         if (!response.isSuccessful()) {
+                             TextView result = findViewById(R.id.result);
+                             try {
+                                 JSONObject jsonObject = new JSONObject(response.errorBody().string());
+                                 result.setText(jsonObject.getString("error"));
+                             } catch (IOException e) {
+                                 e.printStackTrace();
+                             } catch (JSONException e) {
+                                 e.printStackTrace();
+                             }
+                             return;
+                         }
+                         TextView result = findViewById(R.id.result);
+                         ResponseSignin responseSignin = response.body();
+                         result.setText(String.valueOf(responseSignin.success));
                      }
 
                      @Override
-                     public void onFailure(Call<TestClass> call, Throwable t) {
+                     public void onFailure(Call<ResponseSignin> call, Throwable t) {
 
                      }
                  });
@@ -112,26 +127,40 @@ public class LoginActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                JSONObject obj = new JSONObject();
+                /*JSONObject obj = new JSONObject();
                 try {
                     obj.put("user_id", "Chainsmokers");
                     obj.put("room_name", "New");
                 } catch (JSONException e) {
 
                 }
-                socket.emit ("new_join",obj);
+                socket.emit ("new_join",obj);*/
             }
         });
 
     }
 
+    // Networking 관련 내부 Class 및 Interface 정의.
     interface APIInterface {
-        @GET ("/test")
-        Call<TestClass> doTest();
+        @POST ("/api/account/signin")
+        Call<ResponseSignin> signin (@Body RequestSignin requestSignin);
     }
 
-    class TestClass {
-        @SerializedName("sender")
-        public String sender;
+    class RequestSignin {
+        private String userId;
+        private String password;
+
+        public RequestSignin (String userId, String password) {
+            this.userId = userId;
+            this.password = password;
+        }
+    }
+
+    class ResponseSignin {
+        @SerializedName("success")
+        public boolean success;
+
+        @SerializedName("error")
+        public String error;
     }
 }
