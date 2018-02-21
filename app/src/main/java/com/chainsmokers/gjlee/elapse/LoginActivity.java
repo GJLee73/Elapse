@@ -159,8 +159,5 @@ public class LoginActivity extends AppCompatActivity {
     class ResponseSignin {
         @SerializedName("success")
         public boolean success;
-
-        @SerializedName("error")
-        public String error;
     }
 }
