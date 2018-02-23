@@ -70,13 +70,16 @@
             android:layout_width="match_parent"
             android:layout_height="10dp" />
 
-        <Button
+        <TextView
             android:id="@+id/loginButton"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:background="@color/colorPrimary"
+            android:clickable="true"
+            android:background="@drawable/button_text_login"
+            android:gravity="center"
+            android:textStyle="bold"
             android:textColor="@color/colorWhite"
             android:text="@string/button_login"/>
 
@@ -88,17 +91,9 @@
             android:id="@+id/registerButton"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
+            android:clickable="true"
             android:layout_gravity="center"
             android:text="@string/button_register"/>
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="10dp" />
-
-        <TextView
-            android:id="@+id/result"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
     </LinearLayout>
 

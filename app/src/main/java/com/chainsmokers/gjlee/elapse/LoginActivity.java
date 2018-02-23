@@ -1,8 +1,16 @@
 package com.chainsmokers.gjlee.elapse;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Fragment;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.support.v4.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,13 +18,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chainsmokers.gjlee.elapse.network.APIClient;
+import com.chainsmokers.gjlee.elapse.ui.ErrorDialogFragment;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileDescriptor;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,8 +45,10 @@ public class LoginActivity extends AppCompatActivity {
 
     private ImageView buttonPrev;
 
-    private Button loginButton;
+    private EditText account;
+    private EditText password;
 
+    private TextView loginButton;
     private TextView registerButton;
 
     //private Socket socket;
@@ -77,6 +91,9 @@ public class LoginActivity extends AppCompatActivity {
 
         socket.connect();*/
 
+        account = findViewById(R.id.textAccount);
+        password = findViewById(R.id.textPassword);
+
         buttonPrev = findViewById(R.id.buttonPrev);
         buttonPrev.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,37 +106,43 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
-                EditText account = findViewById(R.id.textAccount);
-                EditText password = findViewById(R.id.textPassword);
+                loginButton.setClickable(false);
+
+                if (account.getText().toString().equals("")) {
+                    ErrorDialogFragment errorDialogFragment = ErrorDialogFragment.newInstance("Fill in your account.");
+                    errorDialogFragment.show(getSupportFragmentManager(),"error_message");
+                    loginButton.setClickable(true);
+                    return;
+                } else if (password.getText().toString().equals("")) {
+                    ErrorDialogFragment errorDialogFragment = ErrorDialogFragment.newInstance("Fill in your password.");
+                    errorDialogFragment.show(getSupportFragmentManager(),"error_message");
+                    loginButton.setClickable(true);
+                    return;
+                }
+
+                APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
                 RequestSignin requestSignin = new RequestSignin(account.getText().toString(),password.getText().toString());
-                 Call<ResponseSignin> call = apiInterface.signin(requestSignin);
-                 call.enqueue(new Callback<ResponseSignin>() {
-                     @Override
-                     public void onResponse(Call<ResponseSignin> call, Response<ResponseSignin> response) {
-                         // Debugging.
-                         if (!response.isSuccessful()) {
-                             TextView result = findViewById(R.id.result);
-                             try {
-                                 JSONObject jsonObject = new JSONObject(response.errorBody().string());
-                                 result.setText(jsonObject.getString("error"));
-                             } catch (IOException e) {
-                                 e.printStackTrace();
-                             } catch (JSONException e) {
-                                 e.printStackTrace();
-                             }
-                             return;
-                         }
-                         TextView result = findViewById(R.id.result);
-                         ResponseSignin responseSignin = response.body();
-                         result.setText(String.valueOf(responseSignin.success));
-                     }
+                Call<ResponseSignin> call = apiInterface.signin(requestSignin);
+                call.enqueue(new Callback<ResponseSignin>() {
+                    @Override
+                    public void onResponse(Call<ResponseSignin> call, Response<ResponseSignin> response) {
+                        if (!response.isSuccessful()) {
+                            ErrorDialogFragment errorDialogFragment = ErrorDialogFragment.newInstance("Wrong account or password.");
+                            errorDialogFragment.show(getSupportFragmentManager(),"error_message");
+                            loginButton.setClickable(true);
+                            return;
+                        }
+                        Intent intent = new Intent(LoginActivity.this, MyActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
 
-                     @Override
-                     public void onFailure(Call<ResponseSignin> call, Throwable t) {
+                    @Override
+                    public void onFailure(Call<ResponseSignin> call, Throwable t) {
 
-                     }
-                 });
+                    }
+                });
             }
         });
 
@@ -127,14 +150,8 @@ public class LoginActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*JSONObject obj = new JSONObject();
-                try {
-                    obj.put("user_id", "Chainsmokers");
-                    obj.put("room_name", "New");
-                } catch (JSONException e) {
-
-                }
-                socket.emit ("new_join",obj);*/
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
             }
         });
 

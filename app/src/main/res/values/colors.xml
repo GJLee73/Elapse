@@ -6,4 +6,11 @@
     <color name="colorWhite">#ffffff</color>
     <color name="colorYellow">#f6fc5b</color>
     <color name="colorGrey">#f7f7f2</color>
+    <color name="colorBlack">#000000</color>
+
+    <drawable name="colorPrimary">#54fcbb</drawable>
+    <drawable name="colorPrimaryDark">#47d674</drawable>
+
+    <drawable name="clickedNot">#e1e1da</drawable>
+    <drawable name="clicked">#c9c9c3</drawable>
 </resources>
