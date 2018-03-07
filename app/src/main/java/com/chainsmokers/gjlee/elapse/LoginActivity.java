@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -16,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chainsmokers.gjlee.elapse.network.APIClient;
 import com.chainsmokers.gjlee.elapse.ui.ErrorDialogFragment;
@@ -132,15 +135,24 @@ public class LoginActivity extends AppCompatActivity {
                             loginButton.setClickable(true);
                             return;
                         }
+                        SharedPreferences sharedPref = getSharedPreferences("Setting",Activity.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putBoolean("isLogin",true);
+                        editor.commit();
+
                         Intent intent = new Intent(LoginActivity.this, MyActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                        Toast.makeText(getApplicationContext(),"Login Success",Toast.LENGTH_LONG).show();
                         startActivity(intent);
                         finish();
                     }
 
                     @Override
                     public void onFailure(Call<ResponseSignin> call, Throwable t) {
-
+                        ErrorDialogFragment errorDialogFragment = ErrorDialogFragment.newInstance("Service error. Please try again.");
+                        errorDialogFragment.show(getSupportFragmentManager(),"error_message");
+                        loginButton.setClickable(true);
+                        return;
                     }
                 });
             }

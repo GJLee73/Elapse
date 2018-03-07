@@ -46,6 +46,7 @@ public class ErrorDialogFragment extends DialogFragment{
         if (savedInstanceState!=null) {
             messageError = savedInstanceState.getString("MSG");
         }
+        //setCancelable(false);
     }
 
     @Nullable

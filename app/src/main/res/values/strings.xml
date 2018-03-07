@@ -100,6 +100,19 @@
     <string name="button_login">Login</string>
     <string name="button_register">Register</string>
 
+    <string name="name_stream">The Chainsmokers\' VIENNA Live</string>
+    <string name="name_streamer">The Chainsmokers</string>
+    <string name="watcher_stream">3000</string>
+
+    <string name="chatting_bar">\ \ \ Chatting Here</string>
+    <string name="chatting_msg">Chatting Message</string>
+    <string name="button_send">send</string>
+
+    <string name="chat_user">user</string>
+    <string name="chat_saying">\:</string>
+    <string name="chat_message">user\'s message</string>
+    <string name="server_message">server\'s message</string>
+
     <string name="error">Error</string>
     <string name="temporary">This is temporary text.</string>
 </resources>

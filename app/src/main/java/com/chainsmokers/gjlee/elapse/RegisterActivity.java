@@ -92,7 +92,10 @@ public class RegisterActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<RegisterActivity.ResponseSignup> call, Throwable t) {
-
+                        ErrorDialogFragment errorDialogFragment = ErrorDialogFragment.newInstance("Service error. Please try again.");
+                        errorDialogFragment.show(getSupportFragmentManager(),"error_message");
+                        registerButton.setClickable(true);
+                        return;
                     }
                 });
             }

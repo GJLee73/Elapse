@@ -64,9 +64,7 @@
                 app:tabGravity="fill"
                 app:tabTextColor="@color/colorWhite"
                 app:tabSelectedTextColor="@color/colorWhite"
-                app:tabIndicatorColor="@color/colorYellow">
-
-            </android.support.design.widget.TabLayout>
+                app:tabIndicatorColor="@color/colorYellow" />
 
         </android.support.v7.widget.Toolbar>
 

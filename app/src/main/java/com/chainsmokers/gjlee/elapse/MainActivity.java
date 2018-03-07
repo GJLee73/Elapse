@@ -13,6 +13,7 @@ import android.widget.ImageView;
 
 import com.chainsmokers.gjlee.elapse.list.GamesAdapter;
 import com.chainsmokers.gjlee.elapse.page.GamesPage;
+import com.chainsmokers.gjlee.elapse.page.ListPage;
 import com.chainsmokers.gjlee.elapse.page.MainPage;
 
 public class MainActivity extends AppCompatActivity {
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 case 1:
                     return GamesPage.newInstance();
                 case 2:
-                    return GamesPage.newInstance();
+                    return ListPage.newInstance();
                 default:
                     return MainPage.newInstance();
             }

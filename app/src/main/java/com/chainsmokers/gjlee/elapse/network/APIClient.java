@@ -41,7 +41,7 @@ public class APIClient {
 
         // Retrofit 객체 생성. 특정 url로 네트워크 연결 설정.
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://35.229.67.111/")
+                .baseUrl("http://35.190.183.146")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
